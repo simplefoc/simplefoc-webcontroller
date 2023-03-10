@@ -70,10 +70,10 @@ export const MotorMonitorGraph = ( props : { motorKey: string }) => {
       ] as Partial<Axis>;
 
       // const zoom = yAxis?.autorange ? undefined : yAxis?.range;
-      newZoom.yaxis.push(zoom);
-      if (zoom !== axisZooms.yaxis[i]) {
-        hasChanged = true;
-      }
+      // newZoom.yaxis.push(zoom);
+      // if (zoom !== axisZooms.yaxis[i]) {
+      //   hasChanged = true;
+      // }
     });
 
     if (hasChanged) {
