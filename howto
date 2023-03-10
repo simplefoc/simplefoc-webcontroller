@@ -1,0 +1,12 @@
+# conda environemnt for node
+conda env create -f env.yaml
+# then activate
+conda activate node
+
+# to run
+npm run dev
+
+# to build
+npm run build # takes several minutes and creates the dist folder
+              # copy the dist contenance to the docs folder
+              # add `.` to make the paths relative
