@@ -1,41 +1,57 @@
+import { Input, Button } from "@mui/material";
 import { Axis } from "plotly.js";
 import { useRef, useState } from "react";
 import Plot, { Figure } from "react-plotly.js";
 import { useSerialLineEvent } from "../lib/useSerialLineEvent";
 
-const MAX_POINTS = 100;
-const X_SCALE = new Array(MAX_POINTS).fill(0).map((x, i) => i);
+const MAX_POINTS = 1000;
 
 const COLORS = ["red", "green", "blue", "orange", "pink"];
 
-export const MotorMonitorGraph = ({ motorKey }: { motorKey: string }) => {
+export const MotorMonitorGraph = ( props : { motorKey: string }) => {
   const metrics = useRef([] as { name: string; data: number[] }[]);
   const [revision, setRevision] = useState(0);
+  const [pointNumber, setpointNumber] = useState(MAX_POINTS);
   const [axisZooms, setAxisZooms] = useState({
     xaxis: undefined as undefined | number[],
     yaxis: [] as (undefined | number[])[],
   });
 
+  var X_SCALE = new Array(pointNumber).fill(0).map((x, i) => i);
+
+  const handlePointsChange = (e: any) => {  
+    metrics.current.forEach((metric, i) => {
+      metric.data= [];
+    })
+  };
+
   useSerialLineEvent((line) => {
-    if (line.content.startsWith(`${motorKey}M`)) {
-      const points = line.content.slice(2).split("\t").map(Number);
+    if (line.content.startsWith(`${props.motorKey}`) && line.content.endsWith(`${props.motorKey}`)) {
+      const points = line.content.slice(1,-1).split("\t").map(Number);
+      var n_point = points.length
       points.forEach((point, i) => {
         if (!metrics.current[i]) {
           metrics.current[i] = {
             name: i.toString(),
-            data: [],
+            data: [] //new Array(pointNumber).fill(0),
           };
         }
+        // if(!metrics.current[i].data.length){
+        //   metrics.current[i].data =  new Array(pointNumber).fill(0);
+        // }
         metrics.current[i].data.push(point);
-        if (metrics.current[i].data.length > MAX_POINTS) {
+        if (metrics.current[i].data.length > pointNumber) {
           metrics.current[i].data.splice(
             0,
-            metrics.current[i].data.length - MAX_POINTS
+            metrics.current[i].data.length - pointNumber
           );
         }
       });
+      for (let i = n_point; i < 7; i++) { 
+        if (metrics.current[i]) metrics.current[i].data = []
+      }
       setRevision((r) => r + 1);
-    }
+    }    
   });
 
   const handleGraphUpdate = (update: Readonly<Figure>) => {
@@ -53,7 +69,7 @@ export const MotorMonitorGraph = ({ motorKey }: { motorKey: string }) => {
         `yaxis${i === 0 ? "" : i + 1}`
       ] as Partial<Axis>;
 
-      const zoom = yAxis?.autorange ? undefined : yAxis?.range;
+      // const zoom = yAxis?.autorange ? undefined : yAxis?.range;
       newZoom.yaxis.push(zoom);
       if (zoom !== axisZooms.yaxis[i]) {
         hasChanged = true;
@@ -70,24 +86,24 @@ export const MotorMonitorGraph = ({ motorKey }: { motorKey: string }) => {
       autoRange: axisZooms.xaxis,
     },
   } as any;
-  metrics.current.forEach((m, i) => {
-    const range = axisZooms.yaxis[i];
-    axisData[`yaxis${i === 0 ? "" : i + 1}`] = {
-      autoRange: !range,
-      range: range,
-      tickfront: {
-        color: COLORS[i],
-      },
-      titlefont: {
-        color: COLORS[i],
-      },
-      // position: i * 0.1,
-      side: i % 2 ? "left" : "right",
-      // anchor: "free",
-      // overlaying: "y",
-      title: `Trace ${i}`,
-    };
-  });
+  // metrics.current.forEach((m, i) => {
+  //   const range = axisZooms.yaxis[i];
+  //   axisData[`yaxis${i === 0 ? "" : i + 1}`] = {
+  //     autoRange: !range,
+  //     range: range,
+  //     tickfront: {
+  //       color: COLORS[i],
+  //     },
+  //     titlefont: {
+  //       color: COLORS[i],
+  //     },
+  //     // position: i * 0.1,
+  //     side: i % 2 ? "left" : "right",
+  //     // anchor: "free",
+  //     // overlaying: "y",
+  //     title: `Trace ${i}`,
+  //   };
+  // });
 
   return (
     <div>
@@ -98,14 +114,14 @@ export const MotorMonitorGraph = ({ motorKey }: { motorKey: string }) => {
           y: metric.data,
           type: "scattergl",
           mode: "lines",
-          yaxis: `y${i === 0 ? "" : i + 1}`,
-          line: {
-            color: COLORS[i],
-          },
+          // yaxis: `y${i === 0 ? "" : i + 1}`,
+          // line: {
+          //   color: COLORS[i],
+          // },
         }))}
         layout={{
-          autosize: true,
-          height: 400,
+          // autosize: true,
+          height: 700,
           datarevision: revision,
           ...axisData,
         }}
@@ -115,6 +131,7 @@ export const MotorMonitorGraph = ({ motorKey }: { motorKey: string }) => {
           width: "100%",
         }}
       />
+      <Button variant="outlined" onClick={handlePointsChange}>Reset plot</Button>
     </div>
   );
 };

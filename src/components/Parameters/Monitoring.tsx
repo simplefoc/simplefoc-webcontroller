@@ -30,11 +30,12 @@ export const Monitoring = (props: {
   const fullCommandString = `${props.motorKey}MS`;
   const serialRef = useSerialPortRef();
 
+  var pointNumber = 1000
   var monitoredVars = "0000000"
 
   const setCharAt = (str:string,index:number,chr:string) => {
     if(index > str.length-1) return str;
-    index = index+1;
+    index = index;
     return str.substring(0,index) + chr + str.substring(index+1);
   }
   const getCheckboxValue = (id:string) => {
@@ -74,16 +75,16 @@ export const Monitoring = (props: {
         <Typography>Monitoring Control</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Stack gap={3} direction={"row"} style={{marginBottom:10}}>
-          <Button  variant="outlined"
+         <Stack gap={3} direction={"row"} style={{marginBottom:10}}>
+          {/* <Button  variant="outlined"
             // label="Disable monitoring"
-            onClick={handleStoredCommandClick(props.motorKey+"MC")}
-          > Disable monitoring</Button >
-          <Button variant="outlined"
+            onClick={handleStoredCommandClick(props.motorKey+"MD0")}
+          > Disable monitoring</Button > */}
+          {/* <Button variant="outlined"
             // label="Enable monitoring"
             onClick={handleStoredCommandClick(props.motorKey+"MS01100011")}
-          > Enable monitoring</Button>
-        </Stack>
+          > Enable monitoring</Button> */}
+        </Stack> 
         
         <FocScalar
           motorKey = {props.motorKey}
@@ -158,6 +159,7 @@ export const Monitoring = (props: {
             />
         </AccordionDetails>
     </Accordion>
+    
       <MotorMonitorGraph motorKey={props.motorKey} />
       </AccordionDetails>
     </Accordion>
