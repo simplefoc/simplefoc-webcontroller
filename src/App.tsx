@@ -24,7 +24,7 @@ function App() {
     >
       <Header />
 
-      <Container maxWidth="lg">
+      <Container maxWidth={false} >
         <Stack gap={3} paddingTop={3}>
           {!supportSerial && (
             <Typography>

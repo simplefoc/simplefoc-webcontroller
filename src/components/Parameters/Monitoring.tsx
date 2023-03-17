@@ -21,6 +21,7 @@ import { useSerialLineEvent } from "../../lib/useSerialLineEvent";
 import { useParameterSettings } from "../../lib/useParameterSettings";
 import { FocScalar } from "./FocScalar";
 import { MotorMonitorGraph } from "../MotorMonitorGraph";
+import { Box } from "@mui/system";
 
 import {useRef, useEffect} from 'react';
 
@@ -72,6 +73,7 @@ export const Monitoring = (props: {
   };
 
   return (
+    <Box>
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography>Monitoring Control</Typography>
@@ -161,9 +163,10 @@ export const Monitoring = (props: {
             />
         </AccordionDetails>
     </Accordion>
-    
-      <MotorMonitorGraph motorKey={props.motorKey} monitoredVars={shareMonitorVars} />
       </AccordionDetails>
-    </Accordion>
+    
+      </Accordion>
+      <MotorMonitorGraph motorKey={props.motorKey} monitoredVars={shareMonitorVars} />
+    </Box>
   );
 };

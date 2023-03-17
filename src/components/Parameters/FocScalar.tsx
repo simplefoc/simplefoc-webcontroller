@@ -45,7 +45,7 @@ export const FocScalar = (props: {
       }
     }
   });
-  useSerialIntervalSender(fullCommandString, 3000);
+  useSerialIntervalSender(fullCommandString, 9000);
 
   const changeValue = useMemo(
     () =>
@@ -124,7 +124,7 @@ export const FocScalar = (props: {
           onChange={handleStepChange}
           variant="standard"
           type="number"
-          style = {{width: 70}}
+          style = {{width: 60}}
         />
         <div style={{ marginRight: 10}} />
         <Chip variant="filled"
@@ -138,12 +138,12 @@ export const FocScalar = (props: {
           onClick={handleSetZero}
           label="Zero"
           /> 
-        <div onClick={() => setExpanded(!expanded)} style={{ paddingRight: 200}} />
+        <div onClick={() => setExpanded(!expanded)} style={{ paddingRight: 20}} />
         <TextField
           value={targetValueEntry }
           onChange={handleEntryChange}
           variant="standard"
-          sx={{ marginRight: 2 }}
+          sx={{ marginRight: 0, maxWidth:"80px" }}
           type="number" 
           inputProps={{
             step: props.step

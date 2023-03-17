@@ -43,10 +43,10 @@ export const MotorControlTypeSwitch = ({ motorKey }: { motorKey: string }) => {
       console.log(receivedValue);
     }
   });
-  useSerialIntervalSender(fullCommandString, 5000);
+  useSerialIntervalSender(fullCommandString, 10000);
 
   return (
-    <Stack alignItems="center" direction="row" spacing={2}>
+    <Stack >
       <Typography>Motion control:</Typography>
       <ToggleButtonGroup value={value} exclusive onChange={handleChange}>
         <ToggleButton value="torque">Torque</ToggleButton>

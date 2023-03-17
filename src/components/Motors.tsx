@@ -92,12 +92,14 @@ export const Motors = () => {
             }
           />
           <CardContent>
+           <Stack  direction={"row"} >
+            <Box sx={{ width: "30%", minWidth:"500px" }}>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography>Motion Control</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Stack direction="row" alignItems={"center"} spacing={2} sx={{ marginBottom: 1 }}>
+                <Stack direction="column" alignItems={"left"}  sx={{ marginBottom: 1 , marginLeft:  5}}>
                   <MotorControlTypeSwitch motorKey={key} />
                   <TorqueControlTypeSwitch motorKey={key} />
                 </Stack>
@@ -329,8 +331,12 @@ export const Motors = () => {
                 />
               </AccordionDetails>
             </Accordion>
-            
-          <Monitoring motorKey={key}/>
+            </Box>
+            <Box sx={{ width: "100%"}}>
+              <Monitoring motorKey={key}/>
+            </Box>
+
+        </Stack>
           </CardContent>
         </Card>
       ))}
