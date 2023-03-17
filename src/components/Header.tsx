@@ -28,7 +28,7 @@ export default function Header(props: any) {
             <Button href="https://simplefoc.com" sx={{ color: '#fff' }}>
             Home
             </Button>
-            <Button href="https://docs.simplefoc.com" sx={{ color: '#fff' }}>
+            <Button href="https://docs.simplefoc.com/webcontroller" sx={{ color: '#fff' }}>
             Docs
             </Button>
             <Button href="https://github.com/simplefoc" sx={{ color: '#fff' }}>

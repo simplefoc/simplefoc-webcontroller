@@ -44,7 +44,7 @@ export const SerialManager = ({
   serial: SimpleFocSerialPort | null;
   onSetSerial: (serial: SimpleFocSerialPort | null) => any;
 }) => {
-  const [baudRate, setBaudRate] = useState(BAUD_RATES[1]);
+  const [baudRate, setBaudRate] = useState(BAUD_RATES[10]);
   const [loading, setLoading] = useState(false);
   const ports = useAvailablePorts();
 

@@ -29,6 +29,7 @@ export const Monitoring = (props: {
 }) => {
   const fullCommandString = `${props.motorKey}MS`;
   const serialRef = useSerialPortRef();
+  const [shareMonitorVars, setShareMonitorVars] = useState("0000000");
 
   var pointNumber = 1000
   var monitoredVars = "0000000"
@@ -62,6 +63,7 @@ export const Monitoring = (props: {
     monitoredVars=setCharAt(monitoredVars, 6, getCheckboxValue('angle'));
     changeValue(monitoredVars);
     console.log(monitoredVars)
+    setShareMonitorVars(monitoredVars)
   }
   
 
@@ -160,7 +162,7 @@ export const Monitoring = (props: {
         </AccordionDetails>
     </Accordion>
     
-      <MotorMonitorGraph motorKey={props.motorKey} />
+      <MotorMonitorGraph motorKey={props.motorKey} monitoredVars={shareMonitorVars} />
       </AccordionDetails>
     </Accordion>
   );

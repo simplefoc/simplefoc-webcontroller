@@ -108,11 +108,27 @@ export const Motors = () => {
                   defaultMin={-20}
                   defaultMax={20}
                   step={0.01}
+                />              
+                <FocScalar
+                  motorKey={key}
+                  command="LU"
+                  label="Voltage Limit"
+                  defaultMin={0}
+                  defaultMax={30}
+                  step={1}
                 />
                 <FocScalar
                   motorKey={key}
-                  command="CD"
-                  label="Motion loop downsample"
+                  command="LV"
+                  label="Velocity Limit"
+                  defaultMin={0}
+                  defaultMax={30}
+                  step={1}
+                />  
+                <FocScalar
+                  motorKey={key}
+                  command="LC"
+                  label="Current Limit"
                   defaultMin={0}
                   defaultMax={30}
                   step={1}

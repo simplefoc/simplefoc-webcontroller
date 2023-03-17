@@ -110,9 +110,15 @@ export const FocScalar = (props: {
           onClick={() => setExpanded(!expanded)}
           style={{ flex: 1 }} />
         
-        <Typography style={{marginTop: 4}}>Jog step:</Typography>
+        {/* <Typography style={{marginTop: 4}}>Jog step:</Typography> */}
         <div style={{ marginRight: 10}} />
         
+        <Chip variant="filled"
+          color="primary"
+          onClick={()=>{handleAddValue(1);}}
+          label="+"
+          /> 
+        <div style={{ marginRight: 10}} />  
         <TextField
           value={stepValue}
           onChange={handleStepChange}
@@ -121,12 +127,6 @@ export const FocScalar = (props: {
           style = {{width: 70}}
         />
         <div style={{ marginRight: 10}} />
-        <Chip variant="filled"
-          color="primary"
-          onClick={()=>{handleAddValue(1);}}
-          label="+"
-          /> 
-        <div style={{ marginRight: 10}} />  
         <Chip variant="filled"
           color="primary"
           onClick={()=>{handleAddValue(-1);}}
