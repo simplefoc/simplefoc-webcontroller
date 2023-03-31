@@ -84,8 +84,3 @@ the output should be:
   ready in 858ms.
 ```
 - then just go to your `http://localhost:3000/` and you should be ready to go
-
-# to build
-npm run build # takes several minutes and creates the dist folder
-              # copy the dist contenance to the docs folder
-              # add `.` to make the paths relative
