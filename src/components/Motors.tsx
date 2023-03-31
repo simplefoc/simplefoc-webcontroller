@@ -37,6 +37,7 @@ export const Motors = () => {
 
   useSerialIntervalSender("?", 10000);
   useSerialLineEvent((line) => {
+    if (!line.content.includes("motor")) return;
     const match = line.content.match(MOTOR_OUTPUT_REGEX);
     if (match) {
       setMotors((m) => ({

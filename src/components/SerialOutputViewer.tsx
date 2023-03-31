@@ -47,7 +47,7 @@ export const SerialOutputViewer = () => {
       listOuterRef.current &&
       listOuterRef.current?.scrollHeight -
         (listOuterRef.current?.scrollTop + listOuterRef.current?.clientHeight) <
-        300
+        1000
     ) {
       listRef.current.scrollToItem(lines.length ? lines.length - 1 : 0);
     }
