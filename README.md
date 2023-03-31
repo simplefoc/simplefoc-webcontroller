@@ -64,3 +64,28 @@ void loop(){
   command.run();
 }
 ```
+
+
+## Running the webcontroller locally
+
+- conda environemnt for node
+`conda env create -f env.yaml`
+- then activate
+`conda activate node`
+- to run
+`npm run dev`
+the output should be:
+```
+  vite v2.9.9 dev server running at:
+
+  > Local: http://localhost:3000/
+  > Network: use `--host` to expose
+
+  ready in 858ms.
+```
+- then just go to your `http://localhost:3000/` and you should be ready to go
+
+# to build
+npm run build # takes several minutes and creates the dist folder
+              # copy the dist contenance to the docs folder
+              # add `.` to make the paths relative
