@@ -87,9 +87,9 @@ export const MotorMonitorGraph = ( props : { motorKey: string, monitoredVars:str
       // }
     });
 
-    if (hasChanged) {
-      setAxisZooms(newZoom);
-    }
+    // if (hasChanged) {
+    //   setAxisZooms(newZoom);
+    // }
   };
 
   const axisData = {
