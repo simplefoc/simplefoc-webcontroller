@@ -1,4 +1,5 @@
 import {
+  Collapse,
   Backdrop,
   Button,
   ButtonGroup,
@@ -12,20 +13,24 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useEffect, useState } from "react";
 import { useAvailablePorts } from "../lib/useAvailablePorts";
+import { useSerialPortLines } from "../lib/serialContext";
 import { SimpleFocSerialPort } from "../simpleFoc/serial";
 import { SerialCommandPrompt } from "./SerialCommandPrompt";
 import { SerialOutputViewer } from "./SerialOutputViewer";
 
-const BAUD_RATES = 
-[
+const MOTOR_DISCOVERY_REGEX = /^\??[A-Za-z0-9]:\s*motor\b.*$/i;
+
+const BAUD_RATES = [
   300,
   1200,
   2400,
   4800,
   9600,
-  11200,
+  14400,
   19200,
   38400,
   57600,
@@ -33,7 +38,13 @@ const BAUD_RATES =
   115200,
   230400,
   250000,
-  921600
+  256000,
+  500000,
+  921600,
+  1000000,
+  1500000,
+  2000000,
+  3000000,
 ];
 
 export const SerialManager = ({
@@ -44,15 +55,31 @@ export const SerialManager = ({
   serial: SimpleFocSerialPort | null;
   onSetSerial: (serial: SimpleFocSerialPort | null) => any;
 }) => {
-  const [baudRate, setBaudRate] = useState(BAUD_RATES[10]);
+  const [baudRate, setBaudRate] = useState(115200);
   const [loading, setLoading] = useState(false);
+  const [showConnectionSection, setShowConnectionSection] = useState(true);
   const ports = useAvailablePorts();
+  const serialLines = useSerialPortLines();
+
+  const motorFound = serialLines.some(
+    (line) =>
+      line.type === "received" &&
+      MOTOR_DISCOVERY_REGEX.test(line.content.trim())
+  );
+
+  useEffect(() => {
+    if (motorFound) {
+      setShowConnectionSection(false);
+    }
+  }, [motorFound]);
 
   const handleConnect = async (port?: SerialPort) => {
     const serial = new SimpleFocSerialPort(baudRate);
     setLoading(true);
     try {
       await serial.open(port);
+      serial.send("#5");
+      serial.send("@3");
       onSetSerial(serial);
     } finally {
       setLoading(false);
@@ -68,25 +95,87 @@ export const SerialManager = ({
     }
   };
 
+  const toggleConnectionSection = () => {
+    setShowConnectionSection((visible) => !visible);
+  };
+
   return (
-    <Card sx={{ gridColumn: "span 12" }} {...other}>
+    <Card 
+      sx={{ 
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+      }} 
+      {...other}
+    >
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <CardContent>
-        <Stack direction="row" spacing={2}>
-          <Stack gap={3} alignContent="center" alignItems="stretch">
-            <Typography variant="h5" gutterBottom>
-              Serial
+      <Box
+        role="button"
+        tabIndex={0}
+        aria-expanded={showConnectionSection}
+        onClick={toggleConnectionSection}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleConnectionSection();
+          }
+        }}
+        sx={{
+          px: 2,
+          pt: 1.5,
+          display: "flex",
+          justifyContent: showConnectionSection ? "space-between" : "center",
+          alignItems: "center",
+          cursor: "pointer",
+          userSelect: "none",
+          borderRadius: 1,
+          "&:hover": {
+            bgcolor: "action.hover",
+          },
+        }}
+      >
+        {showConnectionSection ? (
+          <>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: "primary.main" }}>
+              Connection
             </Typography>
+            <Button
+              size="small"
+              variant="text"
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleConnectionSection();
+              }}
+              endIcon={<ExpandLessIcon />}
+            >
+              Collapse
+            </Button>
+          </>
+        ) : (
+          <Stack direction="row" spacing={0.75} alignItems="center" sx={{ color: "primary.main" }}>
+            <ExpandMoreIcon fontSize="small" />
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              Connection (click to expand)
+            </Typography>
+            <ExpandMoreIcon fontSize="small" />
+          </Stack>
+        )}
+      </Box>
+      <Collapse in={showConnectionSection}>
+        <CardContent>
+          <Stack direction={{ xs: "column", lg: "row" }} spacing={3}>
+          <Stack gap={2.5} sx={{ minWidth: { lg: "300px" } }}>
             <TextField
               select
               label="Baud Rate"
               value={baudRate}
               onChange={(e) => setBaudRate(Number(e.target.value))}
+              size="small"
+              fullWidth
             >
               {BAUD_RATES.map((option) => (
                 <MenuItem key={option} value={option}>
@@ -94,47 +183,57 @@ export const SerialManager = ({
                 </MenuItem>
               ))}
             </TextField>
-            <ButtonGroup variant="contained">
+            <ButtonGroup variant="contained" fullWidth>
               <Button
-                sx={{ flex: 1 }}
                 disabled={!!serial && !!serial.port}
                 onClick={() => handleConnect()}
+                sx={{ py: 1.2, fontSize: "0.95rem" }}
               >
                 Connect
               </Button>
               <Button
-                sx={{ flex: 1 }}
                 disabled={!serial || !serial.port}
                 onClick={handleDisconnect}
+                sx={{ py: 1.2, fontSize: "0.95rem" }}
               >
                 Disconnect
               </Button>
             </ButtonGroup>
             {!!ports.length && (
-              <Stack gap={1} alignContent="center" alignItems="stretch">
-                <Typography sx={{ color: "grey.800" }}>
-                  Previously connected:
+              <Stack gap={1.5}>
+                <Typography sx={{ color: "text.secondary", fontSize: "0.9rem", fontWeight: 500 }}>
+                  Available Devices:
                 </Typography>
-                {ports.map((port, i) => (
-                  <Chip
-                    key={i}
-                    clickable
-                    disabled={!!serial && !!serial.port}
-                    label={`${port.getInfo().usbVendorId} - ${
-                      port.getInfo().usbProductId
-                    }`}
-                    onClick={() => handleConnect(port)}
-                  />
-                ))}
+                <Stack gap={1}>
+                  {ports.map((port, i) => (
+                    <Chip
+                      key={i}
+                      clickable
+                      disabled={!!serial && !!serial.port}
+                      label={`${port.getInfo().usbVendorId} - ${port.getInfo().usbProductId}`}
+                      onClick={() => handleConnect(port)}
+                      variant="outlined"
+                      sx={{ justifyContent: "flex-start" }}
+                    />
+                  ))}
+                </Stack>
               </Stack>
             )}
           </Stack>
-          <Stack flex={1} gap={1}>
-            <SerialOutputViewer />
-            <SerialCommandPrompt />
+          <Stack flex={1} gap={1.5} sx={{ minWidth: 0 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, color: "primary.main" }}>
+                Serial Terminal
+              </Typography>
+            </Box>
+            <Stack gap={2}>
+              <SerialOutputViewer />
+              <SerialCommandPrompt />
+            </Stack>
           </Stack>
-        </Stack>
-      </CardContent>
+          </Stack>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 };

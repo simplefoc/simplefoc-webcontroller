@@ -1,19 +1,23 @@
+:root {
+  font-size: 0.95em;
+  --primary-color: #1976d2;
+  --secondary-color: #dc004e;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --background: #fafafa;
+  --surface: #ffffff;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --border-radius: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .App {
-  text-align: center;
+  text-align: left;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.MuiAccordionDetails-root  {
+.MuiAccordionDetails-root {
   padding-left: 1px !important;
   padding-right: 1px !important;
 }
@@ -30,21 +34,33 @@
 
 .App-link {
   color: #61dafb;
+  text-decoration: none;
+  transition: var(--transition);
 }
 
-:root {
-  font-size:0.85em
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-link:hover {
+  opacity: 0.8;
 }
 
 button {
-  font-size: calc(10px + 2vmin);
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: none;
+  transition: var(--transition);
+  border-radius: var(--border-radius);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.simplefoc {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.simplefoc .foc {
+  color: #ff6b35;
+  font-weight: 800;
 }

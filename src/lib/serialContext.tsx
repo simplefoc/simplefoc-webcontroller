@@ -22,12 +22,17 @@ export const useSerialPortLines = () => {
     const lineHandler = () => {
       rerender();
     };
+    const stateHandler = () => {
+      rerender();
+    };
     serial.on("line", lineHandler);
+    serial.on("stateChange", stateHandler);
 
     return () => {
       serial.off("line", lineHandler);
+      serial.off("stateChange", stateHandler);
     };
-  }, [serial]);
+  }, [serial, rerender]);
   return serial?.lines || [];
 };
 
@@ -38,12 +43,13 @@ export const useSerialPortRef = () => {
 export const useSerialPortOpenStatus = () => {
   const serialPort = useSerialPort();
   const rerender = useRerender();
+
   useEffect(() => {
     serialPort?.addListener("stateChange", rerender);
     return () => {
       serialPort?.removeListener("stateChange", rerender);
     };
-  }, []);
+  }, [serialPort, rerender]);
 
   return !!serialPort?.port;
 };

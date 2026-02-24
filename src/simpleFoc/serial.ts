@@ -2,7 +2,9 @@ import EventEmitter from "eventemitter3";
 import { LineBreakTransformer } from "../lib/LineBreakTransformer";
 import { assert, assertExist, delay } from "../lib/utils";
 
-const MAX_LINES_IN_BUFFER = 10000000;
+const MAX_LINES_IN_BUFFER = 50000;
+const LINE_BUFFER_TRIM_BATCH = 5000;
+const MAX_LINE_LENGTH = 4096;
 
 export type SerialLine = {
   index: number;
@@ -105,20 +107,32 @@ export class SimpleFocSerialPort extends EventEmitter<"line" | "stateChange"> {
   }
 
   private handleLine(line: string, type: SerialLine["type"]) {
+    const content =
+      line.length > MAX_LINE_LENGTH
+        ? `${line.slice(0, MAX_LINE_LENGTH)}… [truncated]`
+        : line;
+
     const serialLine: SerialLine = {
       index: this.lastLineIndex,
-      content: line,
+      content,
       type,
     };
     this.lastLineIndex += 1;
     this.lines.push(serialLine);
-    this.lines = this.lines.slice(-MAX_LINES_IN_BUFFER);
+    if (this.lines.length > MAX_LINES_IN_BUFFER + LINE_BUFFER_TRIM_BATCH) {
+      this.lines.splice(0, this.lines.length - MAX_LINES_IN_BUFFER);
+    }
     this.emit("line", serialLine);
   }
 
   async send(line: string) {
     this.writer?.write(`${line}\n`);
     this.handleLine(line, "sent");
+  }
+
+  clearLines() {
+    this.lines = [];
+    this.emit("stateChange");
   }
 
   async restartTarget() {

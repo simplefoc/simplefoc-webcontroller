@@ -29,23 +29,51 @@ export const SerialCommandPrompt = () => {
     serial?.send("@3");
   };
 
+  const handleClearOutput = () => {
+    serial?.clearLines();
+  };
+
   return (
-    <Stack gap={2} direction={"row"}>
-      <Box flex={1} sx={{ display: "flex" }}>
+    <Stack gap={2}>
+      <Box sx={{ display: "flex", gap: 1 }}>
         <TextField
           disabled={!serial}
           variant="outlined"
+          size="small"
           label="Command"
+          placeholder="Enter command..."
           value={promptValue}
           onChange={(e) => setPromptValue(e.target.value)}
           onKeyDown={handleKeyDown}
           sx={{ flex: 1 }}
         />
       </Box>
-        <Stack gap={2} direction={"column"}>
-          <Chip clickable label="Force machine readable mode" onClick={handleMachineReadable} />
-          <Chip clickable label="Restart" onClick={handleRestart} />
-        </Stack>
+      <Stack gap={1} direction={{ xs: "column", sm: "row" }} sx={{ flexWrap: "wrap" }}>
+        <Chip 
+          clickable 
+          label="Machine Readable Mode" 
+          onClick={handleMachineReadable}
+          variant="outlined"
+          size="small"
+          sx={{ flex: { xs: 1, sm: "auto" } }}
+        />
+        <Chip 
+          clickable 
+          label="Restart Serial" 
+          onClick={handleRestart}
+          variant="outlined"
+          size="small"
+          sx={{ flex: { xs: 1, sm: "auto" } }}
+        />
+        <Chip 
+          clickable 
+          label="Clear Output" 
+          onClick={handleClearOutput}
+          variant="outlined"
+          size="small"
+          sx={{ flex: { xs: 1, sm: "auto" } }}
+        />
       </Stack>
+    </Stack>
   );
 };

@@ -10,32 +10,54 @@ import MenuIcon from "@mui/icons-material/Menu";
 export default function Header(props: any) {
   return (
     <Box sx={{ flexGrow: 1 }} {...props}>
-      <AppBar position="static">
-        <Toolbar>
-            {/* <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            >
-            <MenuIcon /> 
-           </IconButton> */}
-          <Typography variant="h6"  component="div" sx={{ flexGrow: 1 }}>
-            <span className="simplefoc">Simple<span className="foc">FOC</span>WebController</span>
+      <AppBar 
+        position="static"
+        sx={{
+          background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+        }}
+      >
+        <Toolbar sx={{ py: 1.5 }}>
+          <Typography variant="h5" component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
+            <span className="simplefoc">Simple<span className="foc">FOC</span></span>
+            <span style={{ marginLeft: 8, fontWeight: 500, fontSize: "0.9em" }}>Web Controller</span>
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <Button href="https://simplefoc.com" sx={{ color: '#fff' }}>
-            Home
+          <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1 }}>
+            <Button 
+              href="https://simplefoc.com" 
+              sx={{ 
+                color: '#fff',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' }
+              }}
+            >
+              Home
             </Button>
-            <Button href="https://docs.simplefoc.com/webcontroller" sx={{ color: '#fff' }}>
-            Docs
+            <Button 
+              href="https://docs.simplefoc.com/webcontroller" 
+              sx={{ 
+                color: '#fff',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' }
+              }}
+            >
+              Docs
             </Button>
-            <Button href="https://github.com/simplefoc" sx={{ color: '#fff' }}>
-            Github
+            <Button 
+              href="https://github.com/simplefoc" 
+              sx={{ 
+                color: '#fff',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' }
+              }}
+            >
+              Github
             </Button>
-            <Button href="https://community.simplefoc.com" sx={{ color: '#fff' }}>
-            Community
+            <Button 
+              href="https://community.simplefoc.com" 
+              sx={{ 
+                color: '#fff',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' }
+              }}
+            >
+              Community
             </Button>
           </Box>
         </Toolbar>

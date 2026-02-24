@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import { FixedSizeList } from "react-window";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSerialPort, useSerialPortLines } from "../lib/serialContext";
 import { SerialLine } from "../simpleFoc/serial";
 
@@ -16,15 +16,19 @@ const SerialLineDisplay = ({
   <div
     style={{
       ...style,
-      lineHeight: "10px",
+      lineHeight: "1.5",
       fontSize: "13px",
-      padding: "0 10px",
-      fontFamily: "monospace",
+      padding: "6px 12px",
+      fontFamily: "'Roboto Mono', monospace",
+      borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+      backgroundColor: data[index].type === "received" ? "rgba(76, 175, 80, 0.05)" : "rgba(33, 150, 243, 0.05)",
     }}
   >
-    {data[index].type === "received" ? "➡️" : "⬅️"}
-    &nbsp;
-    {data[index].content}
+    <span style={{ fontWeight: 600, color: data[index].type === "received" ? "#4caf50" : "#2196f3" }}>
+      {data[index].type === "received" ? "↓ RX" : "↑ TX"}
+    </span>
+    {" "}
+    <span style={{ color: "#212121" }}>{data[index].content}</span>
   </div>
 );
 
@@ -38,6 +42,26 @@ export const SerialOutputViewer = () => {
   const listRef = useRef<any>();
   const listOuterRef = useRef<any>();
   const lines = useSerialPortLines();
+  const visibleLines = useMemo(
+    () =>
+      lines.filter((line) => {
+        const content = line.content.trim();
+        if (/^\wM[SD](?:[-+]?\d+|[01]{7})?$/.test(content)) {
+          return false;
+        }
+        if (/^\wMG\d+$/.test(content)) {
+          return false;
+        }
+        if (/^(?:\?)?\wMG[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?$/.test(content)) {
+          return false;
+        }
+        if (/^(\w).*\t.*\1$/.test(content)) {
+          return false;
+        }
+        return true;
+      }),
+    [lines]
+  );
 
   useEffect(() => {
     if (!listRef.current) {
@@ -49,30 +73,32 @@ export const SerialOutputViewer = () => {
         (listOuterRef.current?.scrollTop + listOuterRef.current?.clientHeight) <
         1000
     ) {
-      listRef.current.scrollToItem(lines.length ? lines.length - 1 : 0);
+      listRef.current.scrollToItem(visibleLines.length ? visibleLines.length - 1 : 0);
     }
-  }, [lines]);
+  }, [visibleLines]);
 
   return (
     <Box
       sx={{
         borderRadius: 1,
         overflow: "hidden",
+        border: "1px solid",
+        borderColor: "divider",
       }}
     >
       <Box
         sx={{
-          bgcolor: "grey.200",
+          bgcolor: "#f5f5f5",
           border: "1px solid",
-          borderColor: "grey.400",
+          borderColor: "divider",
           flex: 1,
           height: 300,
           contain: "content",
         }}
       >
         <SerialLinesList
-          itemData={lines}
-          itemCount={lines.length}
+          itemData={visibleLines}
+          itemCount={visibleLines.length}
           height={300}
           itemSize={20}
           width="100%"
