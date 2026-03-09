@@ -10,3 +10,17 @@ npm run dev
 npm run build # takes several minutes and creates the dist folder
               # copy the dist contenance to the docs folder
               # add `.` to make the paths relative
+
+# google track
+# add the following to the head of index.html
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=xxxx"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'xxxx');
+</script>
