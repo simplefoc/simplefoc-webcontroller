@@ -137,13 +137,13 @@ export const Motors = () => {
       content: (
         <Stack gap={1}>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Configure and run periodic high/low target steps. This generator is intended for PI parameter tuning, allowing you to observe the controller's response to step changes in target.
+            Configure and run a square-wave or sinusoidal target. This generator is intended for PI parameter tuning, allowing you to observe the controller's response to changing targets.
           </Typography>
           <Typography component="div" variant="body2" sx={{ color: "text.secondary" }}>
             Includes:
             <Box component="ul" sx={{ mt: 0.5, mb: 0, pl: 2.2 }}>
-              <li>High value and low value.</li>
-              <li>Step duration in milliseconds.</li>
+              <li>High and low bounds for the target.</li>
+              <li>Step duration for square waves or period for sine waves.</li>
               <li>Start/Stop toggling.</li>
             </Box>
           </Typography>
